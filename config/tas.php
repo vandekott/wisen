@@ -6,7 +6,7 @@ return [
         'manager' => [
             'session_name' => 'manager',
             'token'=> env('TAS_MANAGER_BOT_KEY', '5685199326:AAHtzdqsQ2XHOE0Y7Z_7MXPqfV337ooQ1_c'),
-            'peer' => env('TAS_MANAGER_BOT_PEER', 'vandekott'),
+            'peers' => explode(',', env('TAS_MANAGER_BOT_PEER', '835960246')),
         ],
         'notifier' => [
             'session_name' => 'notifier',
