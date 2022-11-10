@@ -1,0 +1,3 @@
+[submodule "submodules/tas"]
+	path = submodules/tas
+	url = https://github.com/xtrime-ru/TelegramApiServer.git
