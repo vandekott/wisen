@@ -122,6 +122,9 @@ class UserbotResource extends Resource
                         sleep(10);
                     }),
                 Tables\Actions\Action::make('joinChat')
+                    ->hidden(function ($record) {
+                        return !($record->getApi()->updateStatus() === AuthStatus::LOGGED_IN);
+                    })
                     ->label('Присоединиться к чату')
                     ->icon('heroicon-o-chat')
                     ->modalHeading('Введите инвайт-ссылку')
