@@ -2,8 +2,6 @@
 
 namespace App\Services\Word;
 
-use App\Models\Madeline\Userbot;
-use App\Models\Tas\Word;
 use DonatelloZa\RakePlus\RakePlus;
 use Illuminate\Support\Facades\Log;
 use Mekras\Speller\Hunspell\Hunspell;
