@@ -85,8 +85,6 @@ class StartListener extends Command
         $update = json_decode($payload, true)['result']['update'];
 
         ProccessUpdate::dispatch($update);
-
-        return true;
     }
 
     /**

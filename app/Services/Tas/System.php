@@ -36,7 +36,7 @@ class System
      */
     public function phoneToSessionName(string $phone): string
     {
-        return (string) preg_replace('/\D/', '', $phone);
+        return '+' . preg_replace('/\D/', '', $phone);
     }
 
     /**
@@ -136,8 +136,7 @@ class System
      */
     public function reboot(): bool
     {
-        return Http::get("http://{$this->host}:{$this->port}/system/exit")
-            ->json()['success'] ?? false;
+        return (bool) Http::get("http://{$this->host}:{$this->port}/system/exit")->successful();
     }
 
     /**

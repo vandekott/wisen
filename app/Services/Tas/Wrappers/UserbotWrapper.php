@@ -2,8 +2,10 @@
 
 namespace App\Services\Tas\Wrappers;
 
+use App\Models\Tas\Userbot;
 use App\Services\Tas\Enums\AuthStatus;
 use App\Services\Tas\System;
+use App\Services\Tas\Traits\BotQuery;
 use Illuminate\Support\Facades\Http;
 
 /**
@@ -11,6 +13,8 @@ use Illuminate\Support\Facades\Http;
  */
 class UserbotWrapper extends BaseWrapper
 {
+    use BotQuery;
+
     public static array $instances = [];
 
     /**
@@ -42,7 +46,7 @@ class UserbotWrapper extends BaseWrapper
 
         /* Запрос на логин */
         Http::get("http://{$this->system->getHost()}:{$this->system->getPort()}/api/{$this->session_name}/phoneLogin", [
-            'phone' => $this->identifier,
+            'phone' => '+' . $this->identifier,
         ]);
 
         /* Отдаём текущий статус сессии */
@@ -68,7 +72,6 @@ class UserbotWrapper extends BaseWrapper
         if ($this->waitingForPassword() || $this->waitingForSignUp()) {
             /* Сохраняем сессию */
             $this->system->serializeSession($this->session_name);
-            $this->system->reboot();
             return true;
         }
 
@@ -100,33 +103,40 @@ class UserbotWrapper extends BaseWrapper
         return false;
     }
 
-
-
-
-
     /* МЕТОДЫ РАБОТЫ С ПОЛЬЗОВАТЕЛЯМИ */
 
 
-    public function ensureSubscribed(array $groups): bool
+    public function getChats(): ?array
     {
-        $already_subscribed = $this->getSubscribedGroups();
+        $query = $this->query('post', 'messages', 'getDialogs');
 
-        $groups_to_subscribe = array_diff($groups, $already_subscribed);
+        if (!isset($query['response']['dialogs'])) {
+            return null;
+        }
 
-        if (empty($groups_to_subscribe)) return true;
-
-        $this->subscribeToGroups($groups_to_subscribe);
-
-        return true;
+        return collect($query['response']['dialogs'])->where('peer._', '=', 'peerChat')
+            ->map(fn($chat) => [
+                'id' => $chat['peer']['chat_id'],
+                'info' => $this->query('get', 'getInfo', params: [
+                    'id[_]' => $chat['peer']['_'],
+                    'id[chat_id]' => $chat['peer']['chat_id'],
+                ])['response'],
+            ])->toArray();
     }
 
-    private function getSubscribedGroups(): ?array
+    public function joinChat($link): bool
     {
+        $query = $this->query('post', 'messages', 'importChatInvite', [
+            'hash' => trim($link),
+        ]);
 
-    }
+        if (isset($query['response']['updates']['chats'][0]['id'])) {
+            $userbot = Userbot::where('phone', $this->getSessionName($this->identifier))->first();
+            $userbot->peers->push($query['response']['updates']['chats'][0]['id']);
+            $userbot->save();
+        }
 
-    private function subscribeToGroups(array $subscribe_to): array|bool
-    {
+        return (bool) $query;
     }
 
 

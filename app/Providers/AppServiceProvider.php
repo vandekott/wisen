@@ -2,7 +2,9 @@
 
 namespace App\Providers;
 
+use Filament\Forms\Components\{Checkbox, Grid, Section, TextInput};
 use Illuminate\Support\ServiceProvider;
+use Reworck\FilamentSettings\FilamentSettings;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -23,6 +25,26 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        FilamentSettings::setFormFields([
+            Section::make('Скоринг')->schema([
+                TextInput::make('min_score')
+                    ->reactive()
+                    ->minValue(1.0)
+                    ->maxValue(3.0)
+                    ->numeric()
+                    ->step(0.1)
+                    ->label('Минимальный балл')
+                    ->hint('Минимальный балл, при котором сообщение будет отправлено менеджерам')
+                    ->required()
+                    ->placeholder('Минимальный балл'),
+                Grid::make()->schema([
+                    Checkbox::make('activate_grammar')
+                        ->reactive()
+                        ->label('Активировать грамматику')
+                        ->required()
+                ]),
+
+            ])
+        ]);
     }
 }

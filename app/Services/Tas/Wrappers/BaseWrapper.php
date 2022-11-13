@@ -26,6 +26,7 @@ abstract class BaseWrapper
         $this->identifier = $identifier;
         $this->system = System::getInstance();
         $this->session_name = $this->getSessionName($identifier);
+        $this->ensureSessionExist();
         $this->updateStatus();
     }
 

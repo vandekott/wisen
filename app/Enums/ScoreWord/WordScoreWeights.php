@@ -2,7 +2,7 @@
 
 namespace App\Enums\ScoreWord;
 
-enum ScoreWordWeights: int
+enum WordScoreWeights: int
 {
     case LOW = 1;
     case MEDIUM = 2;

@@ -10,10 +10,7 @@ return new class extends Migration {
         Schema::create('userbots', function (Blueprint $table) {
             $table->id();
             $table->string('phone')->unique();
-            $table->string('session')->unique();
-            $table->string('last_auth_status')->nullable();
-            $table->string('current_status')->nullable();
-            $table->json('listen_peers')->nullable();
+            $table->json('peers')->nullable();
             $table->boolean('need_admin_interact')->default(0);
             $table->timestamps();
         });

@@ -6,7 +6,8 @@ use App\Services\Tas\Traits\BotQuery;
 use App\Services\Tas\Traits\WsUrls;
 use App\Services\Tas\Wrappers\BotWrapper;
 
-class ManagerBot
+class
+ManagerBot
 {
     use WsUrls, BotQuery;
 
@@ -20,6 +21,11 @@ class ManagerBot
     {
         $this->config = config('tas.bots.' . $this->session_name);
         $this->api = BotWrapper::getInstance($this->session_name);
+    }
+
+    public function getPermittedUsers()
+    {
+        return $this->config['peers'];
     }
 
     public static function getInstance(): ?ManagerBot
