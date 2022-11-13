@@ -69,7 +69,10 @@ class UserbotResource extends Resource
                     }),
                 Tables\Columns\TextColumn::make('groups_count')
                     ->label('Количество групп')
-                    ->getStateUsing(fn($record) => count($record->getApi()->getChats()) ?? 0)
+                    ->getStateUsing(function ($record) {
+                        $groups = $record->getApi()->getChats();
+                        return ($groups) ? count($groups) : 0;
+                    })
                     ->sortable(),
             ])
             ->filters([
