@@ -2,7 +2,7 @@
 
 namespace App\Jobs\Tas;
 
-use App\Services\Tas\Bots\ManagerBot;
+use App\Services\Tas\Bots\NotifierBot;
 use App\Services\Word\Filter;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
@@ -20,6 +20,7 @@ class ProccessUpdate implements ShouldQueue
 
     public array $payload;
     private float $minScore;
+    private string $chatId;
 
     /**
      * Create a new job instance.
@@ -30,6 +31,7 @@ class ProccessUpdate implements ShouldQueue
     {
         $this->payload = $payload;
         $this->minScore = (float) Valuestore::make(config('filament-settings.path'))->get('min_score');
+        $this->chatId = config('tas.bots.notifier.peer');
     }
     /**
      * Execute the job.
@@ -46,8 +48,8 @@ class ProccessUpdate implements ShouldQueue
             return;
         }
 
-        ManagerBot::getInstance()->query('post', 'sendMessage', params: [
-            'peer' => '@vandekott',
+        NotifierBot::getInstance()->query('post', 'sendMessage', params: [
+            'peer' => $this->chatId,
             'message' => $this->payload['message']['message'] ?? "Не удалось прочесть"
         ]);
 

@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers\Tas;
 
-use App\Services\Tas\Bots\ManagerBot;
+use App\Services\Tas\Bots\NotifierBot;
 use App\Services\Tas\Enums\AuthStatus;
 use App\Services\Tas\Wrappers\UserbotWrapper;
 
 class ManagerBotController
 {
-    public ManagerBot $bot;
+    public NotifierBot $bot;
     private array $resolvableEvents = [
         'message',
     ];
@@ -18,7 +18,7 @@ class ManagerBotController
 
     public function __construct()
     {
-        $this->bot = ManagerBot::getInstance();
+        $this->bot = NotifierBot::getInstance();
     }
 
     public function route(string $message)
