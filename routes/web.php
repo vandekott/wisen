@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Tas\Userbot;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -14,9 +15,14 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect()->route('filament.auth.login');
 });
 
-Route::get('/sessions', function () {
-    return Session;
+Route::get('/getUserInfo/{nickname}', function ($nickname) {
+    return response()->json(
+        Userbot::all()->random()->getApi()->getUserInfo($nickname),
+        200,
+        ['Content-Type' => 'application/json;charset=UTF-8', 'Charset' => 'utf-8'],
+        JSON_UNESCAPED_UNICODE
+    );
 });

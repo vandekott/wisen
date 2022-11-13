@@ -139,6 +139,19 @@ class UserbotWrapper extends BaseWrapper
         return (bool) $query;
     }
 
+    public function getUserInfo($id): ?array
+    {
+        $query = $this->query('get', 'getInfo', params: [
+            'id' => $id,
+        ]);
+
+        if (isset($query['response'])) {
+            return $query['response'];
+        }
+
+        return null;
+    }
+
 
     public function getSessionName($identifier): string
     {
