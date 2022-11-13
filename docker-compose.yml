@@ -42,7 +42,7 @@ services:
     build:
       context: ./submodules/tas
       dockerfile: Dockerfile
-    restart: unless-stopped
+    restart: always
     environment:
       SERVER_ADDRESS: tas
       SERVER_PORT: 9503
