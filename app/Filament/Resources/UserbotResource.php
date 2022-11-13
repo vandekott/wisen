@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\UserbotResource\Pages;
 use App\Models\Tas\Userbot;
 use App\Services\Tas\Enums\AuthStatus;
+use App\Services\Tas\System;
 use Filament\Forms;
 use Filament\Resources\Form;
 use Filament\Resources\Resource;
@@ -81,6 +82,10 @@ class UserbotResource extends Resource
             ->actions([
                 Tables\Actions\Action::make('phoneLogin')
                     ->hidden(function ($record) {
+                        if (System::getInstance()->getSessionExist($record->phone))
+                            System::getInstance()->removeSession($record->phone) &&
+                            System::getInstance()->unlinkSessionFile($record->phone);
+
                         return !($record->getApi()->updateStatus() == AuthStatus::NOT_LOGGED_IN);
                     })
                     ->label('Начать авторизацию')
