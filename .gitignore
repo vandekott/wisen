@@ -27,3 +27,4 @@ websocket-events.php
 container/sessions/
 /container/data/redis
 /container/data/mysql
+container/sessions/notifier.madeline.safe.php
