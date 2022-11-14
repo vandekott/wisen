@@ -24,6 +24,6 @@ _ide_helper.php
 .phpstorm.meta.php
 stdout.log
 websocket-events.php
-sessions/*
+container/sessions/
 /container/data/redis
 /container/data/mysql
