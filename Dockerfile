@@ -41,7 +41,7 @@ RUN git clone https://github.com/danog/PrimeModule-ext \
     && cd PrimeModule-ext && make -j$(nproc) \
     && make install \
     && cd ../  \
-    && rm -rf PrimeModule-ext/ \
+    && rm -rf PrimeModule-ext/
 
 # Clear cache
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
