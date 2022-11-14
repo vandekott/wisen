@@ -4,6 +4,7 @@ namespace App\Models\Tas;
 
 use App\Services\Tas\Enums\AuthStatus;
 use App\Services\Tas\Enums\Status;
+use App\Services\Tas\System;
 use App\Services\Tas\Wrappers\UserbotWrapper;
 use Illuminate\Database\Eloquent\Model;
 
@@ -49,7 +50,7 @@ class Userbot extends Model
 
         /* При удалении */
         static::deleting(function ($model) {
-            $model->getApi()->deleteSession();
+            System::getInstance()->removeSession($model->getApi()->session_name);
         });
     }
 }
