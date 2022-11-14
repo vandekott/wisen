@@ -127,7 +127,7 @@ class Filter
     {
         $encoding = $this->encoder->getEncoding($this->message);
 
-        if ($encoding !== 'UTF-8') {
+        if ($encoding !== EncodingDetector::UTF_8) {
             Log::info('Сообщение не в кодировке UTF-8, преобразование...');
         }
 
