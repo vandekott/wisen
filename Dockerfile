@@ -31,7 +31,7 @@ RUN apt-get install -y \
 RUN apt-get install -y nodejs npm
 
 # Install supervisor
-RUN apt-get install -y supervisor
+RUN apt-get install -y supervisor procps
 
 # hunspell and russian dictionary installation
 RUN apt-get install -y hunspell hunspell-ru
