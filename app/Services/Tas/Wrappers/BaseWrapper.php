@@ -36,7 +36,9 @@ abstract class BaseWrapper
      */
     public function authenticated(): bool
     {
-        return AuthStatus::LOGGED_IN === $this->updateStatus();
+        return
+            $this->system->getSessionExist($this->session_name) &&
+            AuthStatus::LOGGED_IN === $this->updateStatus();
     }
 
     /**
@@ -45,7 +47,9 @@ abstract class BaseWrapper
      */
     public function waitingForCode(): bool
     {
-        return AuthStatus::WAITING_CODE === $this->updateStatus();
+        return
+            $this->system->getSessionExist($this->session_name) &&
+            AuthStatus::WAITING_CODE === $this->updateStatus();
     }
 
     /**
@@ -54,7 +58,9 @@ abstract class BaseWrapper
      */
     public function waitingForPassword(): bool
     {
-        return AuthStatus::WAITING_PASSWORD === $this->updateStatus();
+        return
+            $this->system->getSessionExist($this->session_name) &&
+            AuthStatus::WAITING_PASSWORD === $this->updateStatus();
     }
 
     /**
@@ -63,7 +69,9 @@ abstract class BaseWrapper
      */
     public function waitingForSignUp(): bool
     {
-        return AuthStatus::WAITING_SIGNUP === $this->updateStatus();
+        return
+            $this->system->getSessionExist($this->session_name) &&
+            AuthStatus::WAITING_SIGNUP === $this->updateStatus();
     }
 
     /**
@@ -83,7 +91,9 @@ abstract class BaseWrapper
      */
     public function notLoggedIn(): bool
     {
-        return AuthStatus::NOT_LOGGED_IN === $this->updateStatus();
+        return
+            $this->system->getSessionExist($this->session_name) &&
+            AuthStatus::NOT_LOGGED_IN === $this->updateStatus();
     }
 
     /**
@@ -95,10 +105,5 @@ abstract class BaseWrapper
         if (!$this->system->getSessionExist($this->session_name)) {
             $this->system->addSession($this->session_name);
         }
-    }
-
-    public function deleteSession(): bool
-    {
-        return $this->system->removeSession($this->session_name);
     }
 }

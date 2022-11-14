@@ -41,8 +41,9 @@ class Filter
      * @param string $message
      * @return bool|float
      */
-    public function filter(string $message): bool|float
+    public function filter(string $message): bool|array
     {
+        $message = str($message)->lower();
         Log::info("Фильтрация сообщения: {$message}");
         /* фильтруем маты */
         if (!ObsceneCensorRus::isAllowed($message)) {
@@ -59,26 +60,31 @@ class Filter
 
         Log::info("Сообщение после фильтрации по hunspell: {$message}");
 
-        $keywords = (new RakePlus($spelled,'ru_RU', 3, true))
-            ->keywords();
+        /*$keywords = (new RakePlus($spelled,'ru_RU', 3, true))
+            ->keywords();*/
+
+        $keywords = str($message)->toArray();
 
         $score = 0;
         $count = 0;
+        $found = [];
 
         foreach ($keywords as $item) {
-            $item = mb_strtolower($item);
-            if (in_array($item, $this->store->getLow())) {
+            if (in_array(str($item)->lower(), $this->store->getLow())) {
                 $score++;
                 $count++;
+                $found[] = str($item)->lower();
                 Log::info("Слово {$item} прошло фильтрацию по низкому рейтингу");
-            } elseif (in_array($item, $this->store->getMedium())) {
+            } elseif (in_array(str($item)->lower(), $this->store->getMedium())) {
                 $score += 2;
                 $count++;
                 Log::info("Слово {$item} прошло фильтрацию по среднему рейтингу");
-            } elseif (in_array($item, $this->store->getHigh())) {
+                $found[] = str($item)->lower();
+            } elseif (in_array(str($item)->lower(), $this->store->getHigh())) {
                 $score += 3;
                 $count++;
                 Log::info("Слово {$item} прошло фильтрацию по высокому рейтингу");
+                $found[] = str($item)->lower();
             }
         }
 
@@ -88,7 +94,11 @@ class Filter
         }
 
         Log::info("Сообщение прошло фильтрацию, среднее арифметическое: " . $score / $count);
-        return $score / $count;
+
+        return [
+            'score' => $score / $count,
+            'found' => $found
+        ];
     }
 
 

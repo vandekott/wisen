@@ -35,7 +35,7 @@ class StartListener extends Command
     public function handle()
     {
         $this->info('Starting listener');
-        $websocket_url = 'ws://' . config('tas.host') . ':' . config('tas.port') . '/events';
+        $websocket_url = 'ws://0.0.0.0:' . config('tas.port') . '/events';
         try {
             Loop::run(function () use ($websocket_url) {
                 $this->info("Connecting to: {$websocket_url}");
@@ -84,7 +84,7 @@ class StartListener extends Command
 
         $update = json_decode($payload, true)['result']['update'];
 
-        ProccessUpdate::dispatch($update);
+        ProccessUpdate::dispatch($update, json_decode($payload, true)['result']['session']);
     }
 
     /**

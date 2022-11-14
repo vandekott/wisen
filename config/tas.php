@@ -6,7 +6,10 @@ return [
         'notifier' => [
             'session_name' => 'notifier',
             'token' => env('TAS_NOTIFIER_BOT_KEY', '5718378123:AAH8mkSUIwxXZ-wHdkDTKv_22UemgHkzKrY'),
-            'peer' => env('TAS_NOTIFIER_BOT_PEER', \Spatie\Valuestore\Valuestore::make(config('filament-settings.path'))->get('notifier_chat_id') ?? 'vandekott'),
+            'peer' => [
+                "_" => "peerChannel",
+                "channel_id" => 1656740693,
+            ],
         ],
     ]
 ];

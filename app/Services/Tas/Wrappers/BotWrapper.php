@@ -47,7 +47,7 @@ class BotWrapper extends BaseWrapper
         if ($this->authenticated()) {
             $this->system->serializeSession($this->session_name);
             $this->system->reboot();
-            sleep(12);
+            sleep(10);
         }
 
         return $this->authenticated();

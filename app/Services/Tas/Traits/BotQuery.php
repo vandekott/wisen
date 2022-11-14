@@ -17,6 +17,8 @@ trait BotQuery
      */
     public function query(string $http_method, string $class, string $method = null, array $params = []): mixed
     {
+        $this->ensureSessionExist();
+
         $query_url = sprintf(
             "http://%s:%s/api/%s/%s%s",
             config('tas.host'),
@@ -27,7 +29,7 @@ trait BotQuery
         );
 
         if ($http_method == 'post') {
-            $response = Http::post($query_url, [ 'data' => $params ]);
+            $response = Http::post($query_url, $params);
         } else {
             $response = Http::get($query_url, $params);
         }

@@ -6,10 +6,11 @@ services:
     restart: always
     working_dir: /var/www
     environment:
-      TAS_HOST: tas
+      TAS_HOST: workers
       TAS_PORT: 9503
     volumes:
       - .:/var/www
+      - ./submodules:/var/www/submodules
 #      - ./storage/logs/supervisor/:/var/log/supervisor/
     build:
       dockerfile: Dockerfile
@@ -27,24 +28,9 @@ services:
     restart: always
     working_dir: /var/www
     environment:
-      TAS_HOST: tas
+      TAS_HOST: workers
       TAS_PORT: 9503
-    entrypoint: supervisord -c /etc/supervisor/conf.d/workers.conf
-    volumes:
-      - .:/var/www
-      - ./container/supervisor:/etc/supervisor/conf.d
-    networks:
-      - wisen-net
-
-  tas:
-    container_name: wisen-tas
-    image: xtrime/telegram-api-server:latest
-    build:
-      context: ./submodules/tas
-      dockerfile: Dockerfile
-    restart: always
-    environment:
-      SERVER_ADDRESS: tas
+      SERVER_ADDRESS: 0.0.0.0
       SERVER_PORT: 9503
       MEMORY_LIMIT: "256M"
       TIMEZONE: "Asia/Omsk"
@@ -52,6 +38,7 @@ services:
       TELEGRAM_API_ID: "20406002"
       TELEGRAM_API_HASH: "2e6fd36a9e30157346f94a3f37eae602"
       VERSION: 1
+      LOGGER_LEVEL: 5
       DB_TYPE: memory
       DB_HOST: db
       DB_PORT: "3306"
@@ -64,15 +51,12 @@ services:
       HEALTHCHECK_ENABLED: 1
       HEALTHCHECK_INTERVAL: 60
       HEALTHCHECK_REQUEST_TIMEOUT: 10
-    working_dir: /var/www/tas
+    entrypoint: supervisord -c /etc/supervisor/conf.d/workers.conf
     volumes:
-      - ./submodules/tas:/var/www/tas
-      - ./sessions:/var/www/tas/sessions:rw
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "1024k"
-        max-file: "2"
+      - .:/var/www
+      - ./submodules/tas:/var/tas
+      - ./container/sessions:/var/tas/sessions:rw
+      - ./container/supervisor:/etc/supervisor/conf.d
     networks:
       - wisen-net
 

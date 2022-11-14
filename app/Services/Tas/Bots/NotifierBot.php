@@ -6,28 +6,22 @@ use App\Services\Tas\Traits\BotQuery;
 use App\Services\Tas\Traits\WsUrls;
 use App\Services\Tas\Wrappers\BotWrapper;
 
-class NotifierBot
+class NotifierBot extends BotWrapper
 {
     use WsUrls, BotQuery;
 
     public array $config;
     public static ?NotifierBot $instance = null;
-    public ?BotWrapper $api;
-    public string $session_name = 'manager';
-    private string $scope = 'manager';
+    public string $session_name = 'notifier';
+    private string $scope = 'notifier';
 
     public function __construct()
     {
+        parent::__construct($this->session_name);
         $this->config = config('tas.bots.' . $this->session_name);
-        $this->api = BotWrapper::getInstance($this->session_name);
     }
 
-    public function getPermittedUsers()
-    {
-        return $this->config['peers'];
-    }
-
-    public static function getInstance(): ?NotifierBot
+    public static function getInstance($identifier = null): ?NotifierBot
     {
         if (null === self::$instance) {
             self::$instance = new self();

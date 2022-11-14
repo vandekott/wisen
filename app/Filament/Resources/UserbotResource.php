@@ -71,8 +71,10 @@ class UserbotResource extends Resource
                 Tables\Columns\TextColumn::make('groups_count')
                     ->label('Количество групп')
                     ->getStateUsing(function ($record) {
-                        $groups = $record->getApi()->getChats();
-                        return ($groups) ? count($groups) : 0;
+                        if ($record->getApi()->updateStatus() == AuthStatus::LOGGED_IN) {
+                            $groups = $record->getApi()->getChats();
+                            return ($groups) ? count($groups) : 0;
+                        } else return 'Недоступно';
                     })
                     ->sortable(),
             ])
@@ -82,11 +84,7 @@ class UserbotResource extends Resource
             ->actions([
                 Tables\Actions\Action::make('phoneLogin')
                     ->hidden(function ($record) {
-                        if (System::getInstance()->getSessionExist($record->phone))
-                            System::getInstance()->removeSession($record->phone) &&
-                            System::getInstance()->unlinkSessionFile($record->phone);
-
-                        return !($record->getApi()->updateStatus() == AuthStatus::NOT_LOGGED_IN);
+                        return !$record->getApi()->notLoggedIn();
                     })
                     ->label('Начать авторизацию')
                     ->icon('heroicon-o-key')
@@ -128,7 +126,7 @@ class UserbotResource extends Resource
                     }),
                 Tables\Actions\Action::make('joinChat')
                     ->hidden(function ($record) {
-                        return !($record->getApi()->updateStatus() === AuthStatus::LOGGED_IN);
+                        return !$record->getApi()->authenticated();
                     })
                     ->label('Присоединиться к чату')
                     ->icon('heroicon-o-chat')

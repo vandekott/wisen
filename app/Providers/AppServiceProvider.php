@@ -43,10 +43,6 @@ class AppServiceProvider extends ServiceProvider
                         ->label('Активировать грамматику')
                         ->required()
                 ]),
-                TextInput::make('notifier_chat_id')
-                    ->reactive()
-                    ->label('ID чата для уведомлений')
-                    ->required(),
             ])
         ]);
     }

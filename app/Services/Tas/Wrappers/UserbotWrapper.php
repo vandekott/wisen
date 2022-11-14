@@ -72,6 +72,7 @@ class UserbotWrapper extends BaseWrapper
         if ($this->waitingForPassword() || $this->waitingForSignUp()) {
             /* Сохраняем сессию */
             $this->system->serializeSession($this->session_name);
+            $this->system->reboot();
             return true;
         }
 
@@ -114,14 +115,21 @@ class UserbotWrapper extends BaseWrapper
             return null;
         }
 
-        return collect($query['response']['dialogs'])->where('peer._', '=', 'peerChat')
-            ->map(fn($chat) => [
-                'id' => $chat['peer']['chat_id'],
-                'info' => $this->query('get', 'getInfo', params: [
-                    'id[_]' => $chat['peer']['_'],
-                    'id[chat_id]' => $chat['peer']['chat_id'],
-                ])['response'],
-            ])->toArray();
+        return collect($query['response']['dialogs'])
+            ->whereIn('peer._', ['peerChat', 'peerChannel'])
+            ->map(function ($dialog) use ($query) {
+                $chat = collect($query['response']['chats'])
+                    ->firstWhere(
+                        'id',
+                        $dialog['peer'][(($dialog['peer']['_'] === 'peerChat') ? 'chat_id' : 'channel_id')]
+                    ) ?? $this->getInfo($dialog['peer']);
+                return [
+                    'id' => $chat['id'],
+                    'peer' => $dialog['peer'],
+                    'title' => $chat['title'],
+                    'info' => $chat,
+                ];
+            })->toArray() ?? null;
     }
 
     public function joinChat($link): bool
@@ -139,7 +147,13 @@ class UserbotWrapper extends BaseWrapper
         return (bool) $query;
     }
 
-    public function getUserInfo($id): ?array
+    /**
+     * Получение информации о чате
+     * Принимает никнейм, ID чата или объект Peer (chat_peer или channel_peer)
+     * @param mixed $id
+     * @return array|null
+     */
+    public function getInfo(mixed $id): ?array
     {
         $query = $this->query('get', 'getInfo', params: [
             'id' => $id,
@@ -152,6 +166,11 @@ class UserbotWrapper extends BaseWrapper
         return null;
     }
 
+    public function getChatInfo($chat): ?array
+    {
+        return collect($this->getChats())
+            ->firstWhere('id', $chat['chat_id'] ?? $chat['channel_id'] ?? $chat) ?? null;
+    }
 
     public function getSessionName($identifier): string
     {
