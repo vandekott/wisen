@@ -39,6 +39,7 @@ class UserbotResource extends Resource
                             if (!preg_match('/^\+7\d{10}$/', $value))
                                 $fail('Номер телефона должен быть в формате +7XXXXXXXXXX');
                         },
+                        'unique:userbots,phone',
                     ])
                     ->required()
                     ->autofocus()

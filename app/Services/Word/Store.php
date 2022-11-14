@@ -81,7 +81,6 @@ class Store
         return $this->highWords;
     }
 
-
     /**
      * @throws ExportException
      */

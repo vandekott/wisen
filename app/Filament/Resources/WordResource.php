@@ -4,7 +4,6 @@ namespace App\Filament\Resources;
 
 use App\Enums\ScoreWord\WordScoreWeights;
 use App\Filament\Resources\WordResource\Pages;
-use App\Filament\Resources\WordResource\RelationManagers;
 use App\Models\Tas\Word;
 use Filament\Forms;
 use Filament\Resources\Form;
@@ -38,6 +37,8 @@ class WordResource extends Resource
                     ->label('Слово')
                     ->required()
                     ->autofocus()
+                    ->lazy()
+                    ->rules(['unique:words,word'])
                     ->placeholder('Слово'),
                 Forms\Components\Select::make('score')
                     ->label('Оценка')
