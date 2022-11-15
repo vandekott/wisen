@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "325b275d43948a35fddadc1799cc35ec",
+    "content-hash": "6f0f1a008575164947825c19cd22ada3",
     "packages": [
         {
             "name": "akaunting/laravel-money",
@@ -4065,6 +4065,68 @@
             "time": "2022-10-26T14:07:24+00:00"
         },
         {
+            "name": "hedii/artisan-log-cleaner",
+            "version": "5.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/hedii/artisan-log-cleaner.git",
+                "reference": "9818710b573aab121106eef9242ee2551eb3fc60"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/hedii/artisan-log-cleaner/zipball/9818710b573aab121106eef9242ee2551eb3fc60",
+                "reference": "9818710b573aab121106eef9242ee2551eb3fc60",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/console": "^9.0",
+                "illuminate/filesystem": "^9.0",
+                "illuminate/support": "^9.0",
+                "php": "^8.0"
+            },
+            "require-dev": {
+                "orchestra/testbench": "^7.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Hedii\\ArtisanLogCleaner\\ArtisanLogCleanerServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Hedii\\ArtisanLogCleaner\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "hedii",
+                    "email": "contact@hedichaibi.com",
+                    "homepage": "https://hedichaibi.com"
+                }
+            ],
+            "description": "An artisan command to clear laravel log files",
+            "keywords": [
+                "artisan",
+                "artisan-log-cleaner",
+                "hedii",
+                "laravel",
+                "log",
+                "php"
+            ],
+            "support": {
+                "issues": "https://github.com/hedii/artisan-log-cleaner/issues",
+                "source": "https://github.com/hedii/artisan-log-cleaner"
+            },
+            "time": "2022-03-06T08:10:31+00:00"
+        },
+        {
             "name": "kelunik/certificate",
             "version": "v1.1.2",
             "source": {
@@ -7336,6 +7398,84 @@
                 }
             ],
             "time": "2022-09-02T11:04:28+00:00"
+        },
+        {
+            "name": "saade/filament-laravel-log",
+            "version": "v1.1.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/saade/filament-laravel-log.git",
+                "reference": "4fe4bce62df5861d30d2e0c2b20c54afb038de41"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/saade/filament-laravel-log/zipball/4fe4bce62df5861d30d2e0c2b20c54afb038de41",
+                "reference": "4fe4bce62df5861d30d2e0c2b20c54afb038de41",
+                "shasum": ""
+            },
+            "require": {
+                "filament/filament": "^2.10",
+                "illuminate/contracts": "^9.0",
+                "php": "^8.0",
+                "spatie/laravel-package-tools": "^1.9.2"
+            },
+            "require-dev": {
+                "nunomaduro/collision": "^6.0",
+                "nunomaduro/larastan": "^2.0.1",
+                "orchestra/testbench": "^7.0",
+                "pestphp/pest": "^1.21",
+                "pestphp/pest-plugin-laravel": "^1.1",
+                "phpstan/extension-installer": "^1.1",
+                "phpstan/phpstan-deprecation-rules": "^1.0",
+                "phpstan/phpstan-phpunit": "^1.0",
+                "phpunit/phpunit": "^9.5",
+                "spatie/laravel-ray": "^1.26"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Saade\\FilamentLaravelLog\\FilamentLaravelLogServiceProvider"
+                    ],
+                    "aliases": {
+                        "FilamentLaravelLog": "Saade\\FilamentLaravelLog\\Facades\\FilamentLaravelLog"
+                    }
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Saade\\FilamentLaravelLog\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Saade",
+                    "email": "saade@outlook.com.br",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Access laravel.log file through Filament admin panel",
+            "homepage": "https://github.com/saade/filament-laravel-log",
+            "keywords": [
+                "filament-laravel-log",
+                "laravel",
+                "saade"
+            ],
+            "support": {
+                "issues": "https://github.com/saade/filament-laravel-log/issues",
+                "source": "https://github.com/saade/filament-laravel-log/tree/v1.1.2"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/danharrin",
+                    "type": "github"
+                }
+            ],
+            "time": "2022-06-21T12:34:33+00:00"
         },
         {
             "name": "spatie/invade",
