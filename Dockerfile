@@ -16,19 +16,23 @@ RUN apt-get update && apt-get install -y \
     libxml2-dev \
     zip \
     unzip \
-    openssl
+    openssl \
+    libzip-dev
 
 # install libevent and ev php extension
 RUN apt-get install -y libevent-dev \
     && pecl install ev \
     && docker-php-ext-enable ev
 
+# php-zip
+RUN docker-php-ext-install zip
+
 # Install mysql-client
 RUN apt-get install -y \
     default-mysql-client
 
 # Nodejs and npm installation
-RUN apt-get install -y nodejs npm
+# RUN apt-get install -y nodejs npm
 
 # Install supervisor
 RUN apt-get install -y supervisor procps

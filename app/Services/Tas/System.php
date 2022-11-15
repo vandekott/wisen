@@ -100,6 +100,8 @@ class System
      */
     public function removeSession(string $session): bool
     {
+        Http::get("http://{$this->host}:{$this->port}/api/{$session}/logout");
+
         Http::get("http://{$this->host}:{$this->port}/system/removeSession", [
             'session' => $session
         ]);
@@ -108,6 +110,19 @@ class System
         $this->unlinkSessionFile($session) && $this->reboot() && sleep(12);
 
         return !$this->getSessionExist($session);
+    }
+
+    /**
+     * Удалить несколько сессий из TAS
+     * @param array $sessions
+     * @return bool
+     */
+    public function removeSessions(array $sessions): bool
+    {
+        foreach ($sessions as $session) {
+            $this->removeSession($session);
+        }
+        return true;
     }
 
     /**
