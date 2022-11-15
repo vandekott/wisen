@@ -11,11 +11,9 @@ use Wkhooy\ObsceneCensorRus;
 
 class Filter
 {
-    public static ?Filter $instance = null;
-
-    private array $lowWords;
-    private array $mediumWords;
-    private array $highWords;
+    private string $lowWords;
+    private string $mediumWords;
+    private string $highWords;
 
     private ?Hunspell $hunspell;
     private EncodingDetector $encoder;
@@ -28,20 +26,12 @@ class Filter
 
     public function __construct()
     {
-        $this->lowWords = resolve(Store::class)->getLow();
-        $this->mediumWords = resolve(Store::class)->getMedium();
-        $this->highWords = resolve(Store::class)->getHigh();
+        $this->lowWords = implode(' ', resolve(Store::class)->getLow());
+        $this->mediumWords = implode(' ', resolve(Store::class)->getMedium());
+        $this->highWords = implode(' ', resolve(Store::class)->getHigh());
 
         $this->hunspell = new Hunspell();
         $this->encoder = new EncodingDetector();
-    }
-
-    public static function getInstance(): Filter
-    {
-        if (self::$instance === null) {
-            self::$instance = new self();
-        }
-        return self::$instance;
     }
 
     /**
@@ -49,16 +39,16 @@ class Filter
      * @param string $message
      * @return array|bool|float
      */
-    public static function run(string $message)
+    public function run(string $message)
     {
         Log::info("Фильтрация сообщения: {$message}");
 
-        $instance = self::getInstance()->setMessage($message);
+        $this->setMessage($message);
 
-        if (!$instance->censored()) return false;
+        if (!$this->censored()) return false;
 
-        return $instance
-            ->spell()
+        return $this
+            // ->spell()
             ->ensureEncoding()
             ->ensureLowercase()
             ->tokenize()
@@ -146,15 +136,15 @@ class Filter
      */
     private function scan(string $word): void
     {
-        if (in_array($word, $this->lowWords)) {
+        if (mb_stripos($this->lowWords, $word)) {
             $this->occurrences[] = $word;
             $this->occurrencesSummary++;
             Log::info("Слово {$word} прошло фильтрацию по низкому рейтингу");
-        } elseif (in_array($word, $this->mediumWords)) {
+        } elseif (mb_stripos($this->mediumWords, $word)) {
             $this->occurrences[] = $word;
             $this->occurrencesSummary += 2;
             Log::info("Слово {$word} прошло фильтрацию по среднему рейтингу");
-        } elseif (in_array($word, $this->highWords)) {
+        } elseif (mb_stripos($this->highWords, $word)) {
             $this->occurrences[] = $word;
             $this->occurrencesSummary += 3;
             Log::info("Слово {$word} прошло фильтрацию по высокому рейтингу");

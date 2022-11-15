@@ -43,9 +43,9 @@ class ProccessUpdate implements ShouldQueue
      */
     public function handle()
     {
-        $scoring = Filter::run($this->payload['message']['message']);
+        $scoring = resolve(Filter::class)->run($this->payload['message']['message']);
 
-        if (false === $scoring || !($scoring['score'] >= $this->minScore)) {
+        if (false === $scoring || $scoring['score'] <= $this->minScore) {
             Log::info("Сообщение не прошло фильтрацию по алгоритму с рейтингом {$scoring}");
             $this->delete();
             return;
