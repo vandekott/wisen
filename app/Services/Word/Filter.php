@@ -26,9 +26,9 @@ class Filter
 
     public function __construct()
     {
-        $this->lowWords = implode(' ', resolve(Store::class)->getLow());
-        $this->mediumWords = implode(' ', resolve(Store::class)->getMedium());
-        $this->highWords = implode(' ', resolve(Store::class)->getHigh());
+        $this->lowWords = str(implode(' ', resolve(Store::class)->getLow()))->lower();
+        $this->mediumWords = str(implode(' ', resolve(Store::class)->getMedium()))->lower();
+        $this->highWords = str(implode(' ', resolve(Store::class)->getHigh()))->lower();
 
         $this->hunspell = new Hunspell();
         $this->encoder = new EncodingDetector();
@@ -62,8 +62,16 @@ class Filter
      */
     public function process(): bool|array
     {
+        Log::info("Фильтрация сообщения: " . implode(', ', $this->tokens));
+
         foreach ($this->tokens as $token) {
-            $this->scan($token);
+            $scan = $this->scan($token);
+            if ($scan === false) continue;
+
+            $this->occurrences[] = $scan['word'];
+            $this->occurrencesSummary += $scan['score'];
+
+            unset($scan);
         }
 
         if (count($this->occurrences) === 0) {
@@ -132,23 +140,21 @@ class Filter
     /**
      * Проверяет вхождение слова в базу
      * @param string $word
-     * @return void
+     * @return array<string>|bool<false>
      */
-    private function scan(string $word): void
+    private function scan(string $word): array|bool
     {
         if (mb_stripos($this->lowWords, $word)) {
-            $this->occurrences[] = $word;
-            $this->occurrencesSummary++;
             Log::info("Слово {$word} прошло фильтрацию по низкому рейтингу");
+            return ['word' => $word, 'score' => 1];
         } elseif (mb_stripos($this->mediumWords, $word)) {
-            $this->occurrences[] = $word;
-            $this->occurrencesSummary += 2;
             Log::info("Слово {$word} прошло фильтрацию по среднему рейтингу");
+            return ['word' => $word, 'score' => 2];
         } elseif (mb_stripos($this->highWords, $word)) {
-            $this->occurrences[] = $word;
-            $this->occurrencesSummary += 3;
             Log::info("Слово {$word} прошло фильтрацию по высокому рейтингу");
+            return ['word' => $word, 'score' => 3];
         }
+        return false;
     }
 
     /**
