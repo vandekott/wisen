@@ -111,7 +111,10 @@ class Message
                 -1,
                 PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY
             )
-        )->map(fn($token) => strtok(trim($token), ' \n\t,.!?:;-+()'));
+        )->map(function ($token) {
+            if (empty($token)) return false;
+            return strtok(trim($token), ' \n\t,.!?:;-+()');
+        });
 
         Log::debug("Разбиение на токены:\n{$this->tokens->implode(', ')}");
 
