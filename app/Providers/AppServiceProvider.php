@@ -37,13 +37,12 @@ class AppServiceProvider extends ServiceProvider
                     ->hint('Минимальный балл, при котором сообщение будет отправлено менеджерам')
                     ->required()
                     ->placeholder('Минимальный балл'),
-                Grid::make()->schema([
+                /*Grid::make()->schema([
                     Checkbox::make('activate_grammar')
                         ->reactive()
                         ->label('Активировать грамматику')
                         ->required()
-                ]),
-
+                ]),*/
             ])
         ]);
     }

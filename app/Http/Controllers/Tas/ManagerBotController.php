@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers\Tas;
 
-use App\Services\Tas\Bots\ManagerBot;
-use App\Services\Tas\Enums\AuthStatus;
-use App\Services\Tas\Wrappers\UserbotWrapper;
+use App\Services\TelegramService\Bots\NotifierBot;
+use App\Services\TelegramService\Enums\AuthStatus;
+use App\Services\TelegramService\Wrappers\UserbotWrapper;
 
 class ManagerBotController
 {
-    public ManagerBot $bot;
+    public NotifierBot $bot;
     private array $resolvableEvents = [
         'message',
     ];
@@ -18,7 +18,7 @@ class ManagerBotController
 
     public function __construct()
     {
-        $this->bot = ManagerBot::getInstance();
+        $this->bot = NotifierBot::getInstance();
     }
 
     public function route(string $message)

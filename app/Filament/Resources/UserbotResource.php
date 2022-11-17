@@ -3,8 +3,9 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\UserbotResource\Pages;
-use App\Models\Tas\Userbot;
-use App\Services\Tas\Enums\AuthStatus;
+use App\Models\Telegram\Userbot;
+use App\Services\TelegramService\Enums\AuthStatus;
+use App\Services\TelegramService\System;
 use Filament\Forms;
 use Filament\Resources\Form;
 use Filament\Resources\Resource;
@@ -38,6 +39,7 @@ class UserbotResource extends Resource
                             if (!preg_match('/^\+7\d{10}$/', $value))
                                 $fail('Номер телефона должен быть в формате +7XXXXXXXXXX');
                         },
+                        'unique:userbots,phone',
                     ])
                     ->required()
                     ->autofocus()
@@ -69,7 +71,12 @@ class UserbotResource extends Resource
                     }),
                 Tables\Columns\TextColumn::make('groups_count')
                     ->label('Количество групп')
-                    ->getStateUsing(fn($record) => count($record->getApi()->getChats()))
+                    ->getStateUsing(function ($record) {
+                        if ($record->getApi()->updateStatus() == AuthStatus::LOGGED_IN) {
+                            $groups = $record->getApi()->getChats();
+                            return ($groups) ? count($groups) : 0;
+                        } else return 'Недоступно';
+                    })
                     ->sortable(),
             ])
             ->filters([
@@ -78,7 +85,7 @@ class UserbotResource extends Resource
             ->actions([
                 Tables\Actions\Action::make('phoneLogin')
                     ->hidden(function ($record) {
-                        return !($record->getApi()->updateStatus() == AuthStatus::NOT_LOGGED_IN);
+                        return !$record->getApi()->notLoggedIn();
                     })
                     ->label('Начать авторизацию')
                     ->icon('heroicon-o-key')
@@ -119,6 +126,9 @@ class UserbotResource extends Resource
                         sleep(10);
                     }),
                 Tables\Actions\Action::make('joinChat')
+                    ->hidden(function ($record) {
+                        return !$record->getApi()->authenticated();
+                    })
                     ->label('Присоединиться к чату')
                     ->icon('heroicon-o-chat')
                     ->modalHeading('Введите инвайт-ссылку')

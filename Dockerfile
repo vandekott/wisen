@@ -5,6 +5,8 @@ ARG user
 ARG uid
 ARG gid
 
+ADD "container/config" "$PHP_INI_DIR/conf.d/"
+
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
     git \
@@ -14,25 +16,36 @@ RUN apt-get update && apt-get install -y \
     libxml2-dev \
     zip \
     unzip \
-    openssl
+    openssl \
+    libzip-dev
 
 # install libevent and ev php extension
 RUN apt-get install -y libevent-dev \
     && pecl install ev \
     && docker-php-ext-enable ev
 
+# php-zip
+RUN docker-php-ext-install zip
+
 # Install mysql-client
 RUN apt-get install -y \
     default-mysql-client
 
 # Nodejs and npm installation
-RUN apt-get install -y nodejs npm
+# RUN apt-get install -y nodejs npm
 
 # Install supervisor
-RUN apt-get install -y supervisor
+RUN apt-get install -y supervisor procps
 
 # hunspell and russian dictionary installation
 RUN apt-get install -y hunspell hunspell-ru
+
+# Install PrimeModule for AuthKey generation speedup
+RUN git clone https://github.com/danog/PrimeModule-ext \
+    && cd PrimeModule-ext && make -j$(nproc) \
+    && make install \
+    && cd ../  \
+    && rm -rf PrimeModule-ext/
 
 # Clear cache
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
