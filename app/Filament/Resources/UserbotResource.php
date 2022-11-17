@@ -3,9 +3,9 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\UserbotResource\Pages;
-use App\Models\Tas\Userbot;
-use App\Services\Tas\Enums\AuthStatus;
-use App\Services\Tas\System;
+use App\Models\Telegram\Userbot;
+use App\Services\TelegramService\Enums\AuthStatus;
+use App\Services\TelegramService\System;
 use Filament\Forms;
 use Filament\Resources\Form;
 use Filament\Resources\Resource;

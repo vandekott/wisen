@@ -2,7 +2,7 @@
 
 namespace App\Exports;
 
-use App\Models\Tas\Word;
+use App\Models\Telegram\Word;
 use Maatwebsite\Excel\Concerns\FromCollection;
 
 class WordsExport implements FromCollection

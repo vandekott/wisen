@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Models\Tas;
+namespace App\Models\Telegram;
 
 use App\Enums\ScoreWord\ScoreWordType;
 use App\Enums\ScoreWord\WordScoreWeights;
-use App\Services\Word\Store;
+use App\Services\ScoringService\Store;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -24,6 +24,8 @@ class Word extends Model
         'score' => WordScoreWeights::class,
     ];
 
+    protected $guarded = [];
+
     public function word(): Attribute
     {
         return new Attribute(
@@ -35,17 +37,5 @@ class Word extends Model
     protected static function boot()
     {
         parent::boot();
-
-        static::created(function (Word $word) {
-            resolve(Store::class)->update();
-        });
-
-        static::updated(function (Word $word) {
-            resolve(Store::class)->update();
-        });
-
-        static::deleted(function (Word $word) {
-            resolve(Store::class)->update();
-        });
     }
 }

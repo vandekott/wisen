@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\Tas\Wrappers;
+namespace App\Services\TelegramService\Wrappers;
 
 use Illuminate\Support\Facades\Http;
 

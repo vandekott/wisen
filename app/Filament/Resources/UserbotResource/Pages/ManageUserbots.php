@@ -3,8 +3,8 @@
 namespace App\Filament\Resources\UserbotResource\Pages;
 
 use App\Filament\Resources\UserbotResource;
-use App\Models\Tas\Userbot;
-use App\Services\Tas\System;
+use App\Models\Telegram\Userbot;
+use App\Services\TelegramService\System;
 use Filament\Pages\Actions;
 use Filament\Resources\Pages\ManageRecords;
 

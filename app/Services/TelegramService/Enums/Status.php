@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\Tas\Enums;
+namespace App\Services\TelegramService\Enums;
 
 enum Status: int
 {

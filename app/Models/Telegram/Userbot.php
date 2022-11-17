@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Models\Tas;
+namespace App\Models\Telegram;
 
-use App\Services\Tas\Enums\AuthStatus;
-use App\Services\Tas\Enums\Status;
-use App\Services\Tas\System;
-use App\Services\Tas\Wrappers\UserbotWrapper;
+use App\Services\TelegramService\Enums\AuthStatus;
+use App\Services\TelegramService\Enums\Status;
+use App\Services\TelegramService\System;
+use App\Services\TelegramService\Wrappers\UserbotWrapper;
 use Illuminate\Database\Eloquent\Model;
 
 class Userbot extends Model

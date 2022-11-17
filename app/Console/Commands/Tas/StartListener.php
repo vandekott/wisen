@@ -6,8 +6,10 @@ use Amp\Delayed;
 use Amp\Loop;
 use Amp\Websocket\Client\Rfc6455Connection;
 use Amp\Websocket\Message;
-use App\Jobs\Tas\ProccessUpdate;
+use App\Jobs\Telegram\TelegramUpdateJob;
+use App\Services\TelegramService\System;
 use Illuminate\Console\Command;
+use Illuminate\Support\Carbon;
 use Throwable;
 use function Amp\Websocket\Client\connect;
 
@@ -26,6 +28,13 @@ class StartListener extends Command
      * @var string
      */
     protected $description = 'Listen to TAS events';
+    private $timestart;
+
+    public function __construct()
+    {
+        parent::__construct();
+        $this->timestart = Carbon::now();
+    }
 
     /**
      * Execute the console command.
@@ -40,6 +49,9 @@ class StartListener extends Command
             Loop::run(function () use ($websocket_url) {
                 $this->info("Connecting to: {$websocket_url}");
                 while (true) {
+                    if (Carbon::now()->diffInMinutes($this->timestart) > 30)
+                        echo "Listener restart after 30 minutes" && exit(Command::SUCCESS);
+
                     try {
                         /* Устанавливаем соединение */
                         /** @var Rfc6455Connection $connection */
@@ -50,7 +62,10 @@ class StartListener extends Command
                         /* Хук при обрыве соединения */
                         $connection->onClose(static function () use ($connection, $pingLoop) {
                             Loop::cancel($pingLoop);
+                            System::getInstance()->reboot();
+                            sleep(10);
                             $this->error("Closed - {$connection->getCloseReason()}");
+                            exit(Command::FAILURE);
                         });
 
                         /* Цикл получения обновлений */
@@ -80,11 +95,12 @@ class StartListener extends Command
         if ($this->skip($payload)) {
             return false;
         }
+
         $this->info("Received: {$payload}");
 
         $update = json_decode($payload, true)['result']['update'];
 
-        ProccessUpdate::dispatch($update, json_decode($payload, true)['result']['session']);
+        TelegramUpdateJob::dispatch($update, json_decode($payload, true)['result']['session']);
     }
 
     /**
@@ -107,14 +123,14 @@ class StartListener extends Command
         /* обновление получил бот */
         if (in_array($body['result']['session'], ['manager', 'notifier'])) return true;
         /* событие не updateNewMessage */
-        if ($body['result']['update']['_'] !== 'updateNewMessage') return true;
+        if (!in_array($body['result']['update']['_'], ['updateNewMessage', 'updateNewChannelMessage'])) return true;
         /* не обычное сообщение */
         if ($body['result']['update']['message']['_'] !== 'message') return true;
         /* исходящее сообщение */
         if ($body['result']['update']['message']['out'] === true) return true;
         /* сообщение не из группы */
         if ($body['result']['update']['message']['from_id']['_'] !== 'peerUser' ||
-            $body['result']['update']['message']['peer_id']['_'] !== 'peerChat') return true;
+            !in_array($body['result']['update']['message']['peer_id']['_'], ['peerChat', 'peerChannel'])) return true;
         /* старое сообщение */
         if (round(time() - $body['result']['update']['message']['date']) > 3) return true;
 

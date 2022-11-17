@@ -4,7 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Enums\ScoreWord\WordScoreWeights;
 use App\Filament\Resources\WordResource\Pages;
-use App\Models\Tas\Word;
+use App\Models\Telegram\Word;
 use Filament\Forms;
 use Filament\Resources\Form;
 use Filament\Resources\Resource;

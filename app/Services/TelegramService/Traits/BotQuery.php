@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\Tas\Traits;
+namespace App\Services\TelegramService\Traits;
 
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;

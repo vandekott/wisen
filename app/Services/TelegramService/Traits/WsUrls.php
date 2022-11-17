@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\Tas\Traits;
+namespace App\Services\TelegramService\Traits;
 
 trait WsUrls
 {

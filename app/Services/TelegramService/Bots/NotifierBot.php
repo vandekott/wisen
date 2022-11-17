@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Services\Tas\Bots;
+namespace App\Services\TelegramService\Bots;
 
-use App\Services\Tas\Traits\BotQuery;
-use App\Services\Tas\Traits\WsUrls;
-use App\Services\Tas\Wrappers\BotWrapper;
+use App\Services\TelegramService\Traits\BotQuery;
+use App\Services\TelegramService\Traits\WsUrls;
+use App\Services\TelegramService\Wrappers\BotWrapper;
 
 class NotifierBot extends BotWrapper
 {

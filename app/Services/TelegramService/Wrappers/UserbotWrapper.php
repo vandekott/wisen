@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Services\Tas\Wrappers;
+namespace App\Services\TelegramService\Wrappers;
 
-use App\Models\Tas\Userbot;
-use App\Services\Tas\Enums\AuthStatus;
-use App\Services\Tas\System;
-use App\Services\Tas\Traits\BotQuery;
+use App\Models\Telegram\Userbot;
+use App\Services\TelegramService\Enums\AuthStatus;
+use App\Services\TelegramService\System;
+use App\Services\TelegramService\Traits\BotQuery;
 use Illuminate\Support\Facades\Http;
 
 /**

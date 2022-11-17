@@ -2,8 +2,9 @@
 
 namespace App\Console;
 
-use App\Models\Tas\Userbot;
-use App\Services\Tas\Bots\NotifierBot;
+use App\Models\Telegram\Userbot;
+use App\Services\TelegramService\Bots\NotifierBot;
+use App\Services\ScoringService\Store;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -39,7 +40,18 @@ class Kernel extends ConsoleKernel
             }
         })->dailyAt('12:00');
 
-        //$schedule->command('log:clear --keep-last')->everyThreeHours();
+        /* Обновлять бузу слов */
+        $schedule->call(function () {
+            resolve(Store::class)->update();
+        })->everyFiveMinutes();
+
+        /* чистка логов раз в 3 часа */
+        $schedule->call(function () {
+            $logs = glob(storage_path('logs/*.log'));
+            foreach ($logs as $log) {
+                exec("cp /dev/null {$log}");
+            }
+        })->everyTenMinutes();
     }
 
     /**

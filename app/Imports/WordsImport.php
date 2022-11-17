@@ -3,7 +3,7 @@
 namespace App\Imports;
 
 use App\Enums\ScoreWord\WordScoreWeights;
-use App\Models\Tas\Word;
+use App\Models\Telegram\Word;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithUpsertColumns;
 use Maatwebsite\Excel\Concerns\WithUpserts;

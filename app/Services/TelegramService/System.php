@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Services\Tas;
+namespace App\Services\TelegramService;
 
-use App\Services\Tas\Enums\AuthStatus;
+use App\Services\TelegramService\Enums\AuthStatus;
 use danog\MadelineProto\MTProto;
 use Illuminate\Support\Facades\Http;
 

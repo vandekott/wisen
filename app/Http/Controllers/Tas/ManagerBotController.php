@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers\Tas;
 
-use App\Services\Tas\Bots\NotifierBot;
-use App\Services\Tas\Enums\AuthStatus;
-use App\Services\Tas\Wrappers\UserbotWrapper;
+use App\Services\TelegramService\Bots\NotifierBot;
+use App\Services\TelegramService\Enums\AuthStatus;
+use App\Services\TelegramService\Wrappers\UserbotWrapper;
 
 class ManagerBotController
 {

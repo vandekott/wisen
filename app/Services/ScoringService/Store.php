@@ -1,14 +1,12 @@
 <?php
 
-namespace App\Services\Word;
+namespace App\Services\ScoringService;
 
 use App\Enums\ScoreWord\WordScoreWeights;
-use App\Models\Tas\Word;
+use App\Models\Telegram\Word;
 use Brick\VarExporter\ExportException;
 use Brick\VarExporter\VarExporter;
-use Goodby\CSV\Export\Standard\CsvFileObject;
-use Goodby\CSV\Export\Standard\Exporter;
-use Goodby\CSV\Export\Standard\ExporterConfig;
+use Illuminate\Support\Collection;
 
 /* Хранение слов в файлах, ускорение за счёт OPCache */
 class Store
@@ -69,6 +67,15 @@ class Store
 
     }
 
+    public function getCollection(): Collection
+    {
+        return collect([
+            'low' => $this->lowWords,
+            'medium' => $this->mediumWords,
+            'high' => $this->highWords,
+        ]);
+    }
+
     public function getLow(): array
     {
         return $this->lowWords;
@@ -92,24 +99,5 @@ class Store
         return file_put_contents($file, '<?php return ' . VarExporter::export($words, VarExporter::INLINE_ARRAY) . ';');
     }
 
-    public function import($data): bool
-    {
-
-    }
-
-    public function export()
-    {
-        $config = new ExporterConfig();
-
-        $exporter = new Exporter($config);
-
-        $words = Word::all()->map(fn($i) => [$i->word, $i->score->value])->toArray();
-
-        return response()
-            ->header('Content-Type', 'text/csv')
-            ->streamDownload(function () use ($exporter, $words) {
-                $exporter->export('php://output', $words);
-            }, "words.csv");
-    }
 
 }

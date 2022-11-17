@@ -1,6 +1,6 @@
 <?php
 
-use App\Models\Tas\Userbot;
+use App\Models\Telegram\Userbot;
 use Illuminate\Support\Facades\Route;
 
 /*

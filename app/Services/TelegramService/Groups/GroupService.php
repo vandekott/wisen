@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Services\Tas\Groups;
+namespace App\Services\TelegramService\Groups;
 
-use App\Models\Tas\Userbot;
+use App\Models\Telegram\Userbot;
 
 class GroupService
 {

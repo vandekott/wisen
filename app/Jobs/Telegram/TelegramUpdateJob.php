@@ -1,21 +1,19 @@
 <?php
 
-namespace App\Jobs\Tas;
+namespace App\Jobs\Telegram;
 
-use App\Models\Tas\Userbot;
-use App\Services\Tas\Bots\NotifierBot;
-use App\Services\Word\Filter;
+use App\Models\Telegram\Userbot;
+use App\Services\TelegramService\Bots\NotifierBot;
+use App\Services\ScoringService\Message;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
 use Spatie\Valuestore\Valuestore;
 
-class ProccessUpdate implements ShouldQueue
+class TelegramUpdateJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
@@ -43,9 +41,9 @@ class ProccessUpdate implements ShouldQueue
      */
     public function handle()
     {
-        $scoring = resolve(Filter::class)->run($this->payload['message']['message']);
+        $scoring = (new Message($this->payload['message']['message']))->work();
 
-        if (false === $scoring || $scoring['score'] <= $this->minScore) {
+        if (false === $scoring || $scoring['scoring'] <= $this->minScore) {
             Log::info("Сообщение не прошло фильтрацию по алгоритму с рейтингом {$scoring}");
             $this->delete();
             return;
@@ -75,8 +73,8 @@ class ProccessUpdate implements ShouldQueue
 
         $report = view('notifier.report', [
             'message' => $this->payload['message']['message'] ?? "Не удалось прочесть",
-            'scoring' => $scoring['score'],
-            'found' => $scoring['found'],
+            'scoring' => $scoring['scoring'],
+            'found' => $scoring['words'],
             'group' => $groupInfo,
             'user' => $userInfo,
         ])->render();
