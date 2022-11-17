@@ -51,7 +51,7 @@ class Kernel extends ConsoleKernel
             foreach ($logs as $log) {
                 exec("cp /dev/null {$log}");
             }
-        })->everyTenMinutes();
+        })->everyThirtyMinutes();
     }
 
     /**
