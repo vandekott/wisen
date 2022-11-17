@@ -43,11 +43,9 @@ class TelegramUpdateJob implements ShouldQueue
     {
         $scoring = (new Message($this->payload['message']['message']))->work();
 
-        if (false === $scoring || $scoring['scoring'] <= $this->minScore) {
-            Log::info("Сообщение {$this->payload['message']['message']} не прошло фильтрацию по алгоритму с рейтингом {$scoring['scoring']}");
-            $this->delete();
-            return;
-        }
+        if (false === $scoring) $this->exclude();
+
+        if ($scoring['scoring'] < $this->minScore) $this->nonRelevant($scoring);
 
         $groupInfo = $this->userbot->getApi()->getChatInfo($this->payload['message']['peer_id']);
 
@@ -88,5 +86,19 @@ class TelegramUpdateJob implements ShouldQueue
             ],
         ]]);
 
+    }
+
+    private function exclude(): never
+    {
+        Log::notice("Сообщение {$this->payload['message']['message']} не содержит ключевых слов");
+        $this->delete();
+        exit(0);
+    }
+
+    private function nonRelevant($scoring): never
+    {
+        Log::notice("Сообщение {$this->payload['message']['message']} не прошло фильтрацию по алгоритму с рейтингом {$scoring['scoring']}");
+        $this->delete();
+        exit(0);
     }
 }

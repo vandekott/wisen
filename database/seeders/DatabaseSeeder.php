@@ -33,7 +33,7 @@ class DatabaseSeeder extends Seeder
             $sample10k = collect(explode(PHP_EOL, file_get_contents(database_path('seeders/sample_words.txt'))));
 
             //dd(count($sample10k));
-            Word::withoutEvents(function () use ($sample10k) {
+            /*Word::withoutEvents(function () use ($sample10k) {
                 $sample10k->unique()->each(function ($word) {
                     Word::updateOrCreate([
                         'word' => $word,
@@ -42,7 +42,7 @@ class DatabaseSeeder extends Seeder
                         'score' => random_int(1, 3),
                     ]);
                 });
-            });
+            });*/
             DB::commit();
         } catch (Throwable $e) {
             DB::rollBack();
