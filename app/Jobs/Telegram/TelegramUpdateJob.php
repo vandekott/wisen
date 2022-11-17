@@ -44,7 +44,7 @@ class TelegramUpdateJob implements ShouldQueue
         $scoring = (new Message($this->payload['message']['message']))->work();
 
         if (false === $scoring || $scoring['scoring'] <= $this->minScore) {
-            Log::info("Сообщение не прошло фильтрацию по алгоритму с рейтингом {$scoring['scoring']}");
+            Log::info("Сообщение {$this->payload['message']['message']} не прошло фильтрацию по алгоритму с рейтингом {$scoring['scoring']}");
             $this->delete();
             return;
         }

@@ -44,8 +44,9 @@ class Message
     private function censoring(): Message
     {
         if (!ObsceneCensorRus::isAllowed($this->message)) {
-            $this->message = ObsceneCensorRus::getFiltered($this->message);
             Log::alert("Сообщение не прошло цензуру {$this->message}");
+            $this->message = ObsceneCensorRus::getFiltered($this->message);
+            Log::alert("Сообщение после цензуры {$this->message}");
         }
 
         return $this;

@@ -29,6 +29,7 @@ class StartListener extends Command
      */
     protected $description = 'Listen to TAS events';
     private $timestart;
+    private $skipReason = '';
 
     public function __construct()
     {
@@ -49,8 +50,8 @@ class StartListener extends Command
             Loop::run(function () use ($websocket_url) {
                 $this->info("Connecting to: {$websocket_url}");
                 while (true) {
-                    if (Carbon::now()->diffInMinutes($this->timestart) > 30)
-                        echo "Listener restart after 30 minutes" && exit(Command::SUCCESS);
+                    if (Carbon::now()->diffInMinutes($this->timestart) > 60)
+                        echo "Listener restart after 1 hour" && exit(Command::SUCCESS);
 
                     try {
                         /* Устанавливаем соединение */
@@ -62,8 +63,6 @@ class StartListener extends Command
                         /* Хук при обрыве соединения */
                         $connection->onClose(static function () use ($connection, $pingLoop) {
                             Loop::cancel($pingLoop);
-                            System::getInstance()->reboot();
-                            sleep(10);
                             $this->error("Closed - {$connection->getCloseReason()}");
                             exit(Command::FAILURE);
                         });
@@ -93,6 +92,8 @@ class StartListener extends Command
     public function dispatch($payload)
     {
         if ($this->skip($payload)) {
+            $this->alert("Skip: {$payload}");
+            $this->alert("Reason: {$this->skipReason}");
             return false;
         }
 
@@ -113,25 +114,35 @@ class StartListener extends Command
         $body = json_decode($payload, true);
 
         /* нет result */
+        $this->skipReason = 'no result';
         if (!isset($body['result'])) return true;
         /* нет тела update */
+        $this->skipReason = 'no update';
         if (!isset($body['result']['update'])) return true;
         /* update не содержит тело message */
+        $this->skipReason = 'no message';
         if (!isset($body['result']['update']['message'])) return true;
         /* пустое сообщение */
+        $this->skipReason = 'empty message';
         if (empty($body['result']['update']['message']['message'])) return true;
         /* обновление получил бот */
+        $this->skipReason = 'bot update';
         if (in_array($body['result']['session'], ['manager', 'notifier'])) return true;
         /* событие не updateNewMessage */
+        $this->skipReason = 'not updateNewMessage/updateNewChannelMessage';
         if (!in_array($body['result']['update']['_'], ['updateNewMessage', 'updateNewChannelMessage'])) return true;
         /* не обычное сообщение */
+        $this->skipReason = 'not message';
         if ($body['result']['update']['message']['_'] !== 'message') return true;
         /* исходящее сообщение */
+        $this->skipReason = 'outgoing message';
         if ($body['result']['update']['message']['out'] === true) return true;
         /* сообщение не из группы */
+        $this->skipReason = 'not from group';
         if ($body['result']['update']['message']['from_id']['_'] !== 'peerUser' ||
             !in_array($body['result']['update']['message']['peer_id']['_'], ['peerChat', 'peerChannel'])) return true;
         /* старое сообщение */
+        $this->skipReason = 'old message';
         if (round(time() - $body['result']['update']['message']['date']) > 3) return true;
 
         return false;
