@@ -26,7 +26,7 @@ class DatabaseSeeder extends Seeder
                 'email' => 'admin@wisen.io',
             ] ,[
                 'name' => 'Admin',
-                'email' => 'admin@gmail.com',
+                'email' => 'admin@wisen.io',
                 'password' => Hash::make('$BY5h#Hjp25dJu!9'), // $BY5h#Hjp25dJu!9
             ]);
 
